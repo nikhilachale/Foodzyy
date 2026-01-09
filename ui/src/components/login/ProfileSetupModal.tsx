@@ -2,41 +2,19 @@ import { useState } from "react";
 import api from "../../api/axios";
 import FormInput from "../ui/FormInput";
 import GradientButton from "../ui/GradientButton";
-import SelectButton from "../ui/SelectButton";
-
-export interface ProfileFormData {
-  name: string;
-  country: "INDIA" | "AMERICA";
-  role: "ADMIN" | "MANAGER" | "MEMBER";
-}
 
 interface ProfileSetupModalProps {
   onSuccess: () => void;
 }
 
-const COUNTRIES = [
-  { value: "INDIA" as const, label: "India", icon: "🇮🇳" },
-  { value: "AMERICA" as const, label: "America", icon: "🇺🇸" },
-];
-
-const ROLES = [
-  { value: "MEMBER" as const, label: "MEMBER", icon: "👤" },
-  { value: "MANAGER" as const, label: "MANAGER", icon: "👔" },
-  { value: "ADMIN" as const, label: "ADMIN", icon: "👑" },
-];
-
 export default function ProfileSetupModal({ onSuccess }: ProfileSetupModalProps) {
-  const [profileData, setProfileData] = useState<ProfileFormData>({
-    name: "",
-    country: "INDIA",
-    role: "MEMBER",
-  });
+  const [name, setName] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
   const handleSave = async () => {
-    if (!profileData.name.trim()) {
+    if (!name.trim()) {
       setError("Please enter your name");
       return;
     }
@@ -45,9 +23,9 @@ export default function ProfileSetupModal({ onSuccess }: ProfileSetupModalProps)
     setError("");
 
     try {
-      const res = await api.put("/auth/profile", profileData);
+      const res = await api.put("/auth/profile", { name: name.trim() });
       localStorage.setItem("token", res.data.access_token);
-      setSuccess("Profile saved successfully!");
+      setSuccess("Welcome to Foodzyy!");
       setTimeout(() => {
         onSuccess();
       }, 1000);
@@ -57,10 +35,6 @@ export default function ProfileSetupModal({ onSuccess }: ProfileSetupModalProps)
     } finally {
       setLoading(false);
     }
-  };
-
-  const updateField = <K extends keyof ProfileFormData>(field: K, value: ProfileFormData[K]) => {
-    setProfileData((prev) => ({ ...prev, [field]: value }));
   };
 
   return (
@@ -81,46 +55,9 @@ export default function ProfileSetupModal({ onSuccess }: ProfileSetupModalProps)
           <FormInput
             label="Your Name"
             placeholder="Enter your full name"
-            value={profileData.name}
-            onChange={(value) => updateField("name", value)}
+            value={name}
+            onChange={setName}
           />
-
-          {/* Country Select */}
-          <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">
-              Country
-            </label>
-            <div className="grid grid-cols-2 gap-3">
-              {COUNTRIES.map((country) => (
-                <SelectButton
-                  key={country.value}
-                  selected={profileData.country === country.value}
-                  onClick={() => updateField("country", country.value)}
-                >
-                  {country.icon} {country.label}
-                </SelectButton>
-              ))}
-            </div>
-          </div>
-
-          {/* Role Select */}
-          <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">
-              Role
-            </label>
-            <div className="grid grid-cols-3 gap-2">
-              {ROLES.map((role) => (
-                <SelectButton
-                  key={role.value}
-                  selected={profileData.role === role.value}
-                  onClick={() => updateField("role", role.value)}
-                  className="text-sm font-medium px-3 py-2.5"
-                >
-                  {role.icon} {role.label}
-                </SelectButton>
-              ))}
-            </div>
-          </div>
 
           {/* Error/Success Messages */}
           {error && <p className="text-red-400 text-sm animate-pulse">{error}</p>}
@@ -130,11 +67,11 @@ export default function ProfileSetupModal({ onSuccess }: ProfileSetupModalProps)
           <GradientButton
             onClick={handleSave}
             loading={loading}
-            loadingText="Saving..."
-            disabled={!profileData.name.trim()}
+            loadingText="Getting Started..."
+            disabled={!name.trim()}
             className="mt-4"
           >
-            Complete Setup →
+            Get Started →
           </GradientButton>
         </div>
       </div>

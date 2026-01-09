@@ -1,12 +1,12 @@
 import type { ReactNode } from "react";
 
 interface ModalProps {
-  isOpen: boolean;
+  isOpen?: boolean;
   onClose: () => void;
   children: ReactNode;
 }
 
-export default function Modal({ isOpen, onClose, children }: ModalProps) {
+export default function Modal({ isOpen = true, onClose, children }: ModalProps) {
   if (!isOpen) return null;
 
   return (
@@ -61,6 +61,28 @@ export function ModalHeader({ title, subtitle, countryFlag, gradient, onClose }:
   );
 }
 
+interface SimpleModalHeaderProps {
+  children: ReactNode;
+  onClose: () => void;
+}
+
+export function SimpleModalHeader({ children, onClose }: SimpleModalHeaderProps) {
+  return (
+    <div className="p-6 relative overflow-hidden bg-linear-to-r from-orange-500 to-pink-500">
+      <div className="absolute inset-0 bg-black/10" />
+      <div className="relative z-10 flex items-center justify-between">
+        <h3 className="text-2xl font-bold text-white">{children}</h3>
+        <button 
+          onClick={onClose}
+          className="w-10 h-10 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center text-white text-xl font-bold transition-all duration-300"
+        >
+          ×
+        </button>
+      </div>
+    </div>
+  );
+}
+
 interface ModalBodyProps {
   children: ReactNode;
   className?: string;
@@ -80,7 +102,7 @@ interface ModalFooterProps {
 
 export function ModalFooter({ children }: ModalFooterProps) {
   return (
-    <div className="p-4 border-t border-white/10 bg-slate-900/50">
+    <div className="p-4 border-t border-white/10 bg-slate-900/50 flex gap-3 justify-end">
       {children}
     </div>
   );

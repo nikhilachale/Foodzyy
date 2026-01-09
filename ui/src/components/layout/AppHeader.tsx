@@ -61,10 +61,17 @@ export default function AppHeader({
             {rightContent}
 
             {/* User Info */}
-            <div className="flex items-center gap-4 pl-4 border-l border-white/10">
+            <div className="flex items-center gap-3 pl-4 border-l border-white/10">
+              {/* User Avatar with Initials */}
+              <div className="w-10 h-10 bg-linear-to-br from-orange-500 to-pink-500 rounded-full flex items-center justify-center text-white font-bold text-sm shadow-lg">
+                {user?.name 
+                  ? user.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)
+                  : user?.phone?.slice(-2) || '?'
+                }
+              </div>
               <div className="text-right">
-                <p className="text-sm font-medium text-white">{user?.role}</p>
-                <p className="text-xs text-gray-500">{user?.country}</p>
+               
+                <p className="text-xs text-gray-500">{user?.role} </p>
               </div>
               <button
                 onClick={logout}
@@ -78,6 +85,13 @@ export default function AppHeader({
           {/* Mobile menu button */}
           <div className="flex items-center gap-3 md:hidden">
             {rightContent}
+            {/* Mobile User Avatar */}
+            <div className="w-8 h-8 bg-linear-to-br from-orange-500 to-pink-500 rounded-full flex items-center justify-center text-white font-bold text-xs">
+              {user?.name 
+                ? user.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)
+                : user?.phone?.slice(-2) || '?'
+              }
+            </div>
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="text-gray-400 hover:text-white p-2"
@@ -102,7 +116,10 @@ export default function AppHeader({
               </Link>
             ))}
             <div className="flex items-center justify-between pt-3 border-t border-white/10">
-              <span className="text-sm text-gray-400">{user?.role} • {user?.country}</span>
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-white font-medium">{user?.name || user?.phone}</span>
+                <span className="text-xs text-gray-500">({user?.role} • {user?.country === "INDIA" ? "🇮🇳" : "🇺🇸"})</span>
+              </div>
               <button onClick={logout} className="text-red-400 text-sm font-medium">Logout</button>
             </div>
           </div>

@@ -6,6 +6,7 @@ const JWT_SECRET = process.env.JWT_SECRET || "secret123";
 export interface AuthUser {
   id: string;
   phone: string;
+  name: string | null;
   role: "ADMIN" | "MANAGER" | "MEMBER";
   country: "INDIA" | "AMERICA";
 }
@@ -27,6 +28,7 @@ export function authMiddleware(req: AuthRequest, res: Response, next: NextFuncti
     const decoded = jwt.verify(token, JWT_SECRET) as {
       sub: string;
       phone: string;
+      name: string | null;
       role: "ADMIN" | "MANAGER" | "MEMBER";
       country: "INDIA" | "AMERICA";
     };
@@ -34,6 +36,7 @@ export function authMiddleware(req: AuthRequest, res: Response, next: NextFuncti
     req.user = {
       id: decoded.sub,
       phone: decoded.phone,
+      name: decoded.name,
       role: decoded.role,
       country: decoded.country,
     };

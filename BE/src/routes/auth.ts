@@ -41,6 +41,7 @@ router.post("/login", async (req: Request, res: Response) => {
     const payload = {
       sub: user.id,
       phone: user.phone,
+      name: user.name,
       role: user.role,
       country: user.country,
     };
@@ -67,10 +68,10 @@ router.post("/login", async (req: Request, res: Response) => {
 // PUT /auth/profile - Update user profile (requires auth)
 router.put("/profile", authMiddleware, async (req: AuthRequest, res: Response) => {
   try {
-    const { name, country, role } = req.body;
+    const { name } = req.body;
 
-    if (!name || !country || !role) {
-      return res.status(400).json({ message: "Name, country, and role are required" });
+    if (!name) {
+      return res.status(400).json({ message: "Name is required" });
     }
 
     const userId = req.user!.id;
@@ -80,15 +81,17 @@ router.put("/profile", authMiddleware, async (req: AuthRequest, res: Response) =
       return res.status(404).json({ message: "User not found" });
     }
 
+    // Only update name, keep existing country/role (defaults: INDIA, MEMBER)
     const updatedUser = await prisma.user.update({
       where: { id: userId },
-      data: { name, country, role },
+      data: { name },
     });
 
     // Generate new token with updated info
     const payload = {
       sub: updatedUser.id,
       phone: updatedUser.phone,
+      name: updatedUser.name,
       role: updatedUser.role,
       country: updatedUser.country,
     };

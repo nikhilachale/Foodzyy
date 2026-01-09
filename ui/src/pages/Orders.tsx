@@ -4,7 +4,7 @@ import api from "../api/axios";
 import { useAuth } from "../context/AuthContext";
 import { AppHeader, PageLayout, PageContent, PageHero } from "../components/layout";
 import { LoadingState, EmptyState } from "../components/ui";
-import { OrderCard, OrderModal } from "../components/order";
+import { OrderCard, OrderModal, CheckoutModal } from "../components/order";
 import type { Order } from "../components/order";
 
 export default function Orders() {
@@ -12,6 +12,7 @@ export default function Orders() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+  const [checkoutOrder, setCheckoutOrder] = useState<Order | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
 
@@ -25,11 +26,22 @@ export default function Orders() {
     fetchOrders();
   }, []);
 
-  const checkout = async (id: string) => {
-    setActionLoading(id);
-    await api.post(`/orders/${id}/checkout`);
-    await fetchOrders();
-    setActionLoading(null);
+  const initiateCheckout = (order: Order) => {
+    setCheckoutOrder(order);
+  };
+
+  const confirmCheckout = async (paymentMethodId: string) => {
+    if (!checkoutOrder) return;
+    setActionLoading(checkoutOrder.id);
+    try {
+      await api.post(`/orders/${checkoutOrder.id}/checkout`, { paymentMethodId });
+      await fetchOrders();
+      setCheckoutOrder(null);
+    } catch (error) {
+      console.error("Checkout failed", error);
+    } finally {
+      setActionLoading(null);
+    }
   };
 
   const cancel = async (id: string) => {
@@ -42,6 +54,7 @@ export default function Orders() {
   const navLinks = [
     { to: "/restaurants", label: "Restaurants", icon: "🍽️", isActive: false },
     { to: "/orders", label: "Orders", icon: "📦", isActive: true },
+    ...(user?.role === "ADMIN" ? [{ to: "/payment", label: "Payment", icon: "💳", isActive: false }] : []),
   ];
 
   const showActions = user?.role !== "MEMBER";
@@ -94,7 +107,7 @@ export default function Orders() {
                 key={order.id}
                 order={order}
                 onSelect={() => setSelectedOrder(order)}
-                onCheckout={() => checkout(order.id)}
+                onCheckout={() => initiateCheckout(order)}
                 onCancel={() => cancel(order.id)}
                 actionLoading={actionLoading === order.id}
                 showActions={showActions}
@@ -107,9 +120,16 @@ export default function Orders() {
       <OrderModal
         order={selectedOrder}
         onClose={() => setSelectedOrder(null)}
-        onCheckout={() => selectedOrder && checkout(selectedOrder.id)}
+        onCheckout={() => selectedOrder && initiateCheckout(selectedOrder)}
         onCancel={() => selectedOrder && cancel(selectedOrder.id)}
         showActions={showActions}
+      />
+
+      <CheckoutModal
+        order={checkoutOrder}
+        onClose={() => setCheckoutOrder(null)}
+        onConfirm={confirmCheckout}
+        loading={actionLoading === checkoutOrder?.id}
       />
     </PageLayout>
   );

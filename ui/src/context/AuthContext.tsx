@@ -4,6 +4,7 @@ import { jwtDecode } from "jwt-decode";
 interface User {
   id: string;
   phone: string;
+  name: string | null;
   role: string;
   country: string;
 }
@@ -11,6 +12,7 @@ interface User {
 interface JwtPayload {
   sub: string;
   phone: string;
+  name: string | null;
   role: string;
   country: string;
 }
@@ -32,6 +34,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setUser({
         id: decoded.sub,
         phone: decoded.phone,
+        name: decoded.name,
         role: decoded.role,
         country: decoded.country,
       });

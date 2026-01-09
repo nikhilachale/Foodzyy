@@ -160,6 +160,27 @@ async function main() {
   });
 
   console.log("✅ Created American restaurants");
+
+  // Create Payment Methods for Admin
+  await prisma.paymentMethod.createMany({
+    data: [
+      { type: "CREDIT_CARD", userId: adminUser.id },
+      { type: "UPI", userId: adminUser.id },
+      { type: "NET_BANKING", userId: adminUser.id },
+    ],
+  });
+
+  // Create Payment Methods for Managers
+  await prisma.paymentMethod.createMany({
+    data: [
+      { type: "CREDIT_CARD", userId: managerIndia.id },
+      { type: "UPI", userId: managerIndia.id },
+      { type: "CREDIT_CARD", userId: managerUSA.id },
+      { type: "DEBIT_CARD", userId: managerUSA.id },
+    ],
+  });
+
+  console.log("✅ Created payment methods");
   console.log("🎉 Seeding complete!");
 }
 

@@ -14,8 +14,17 @@ router.get("/", authMiddleware, async (req: AuthRequest, res: Response) => {
 
     const user = req.user!;
 
-    // Users can only see their own orders, ADMIN can see all
-    const where = user.role === "ADMIN" ? {} : { userId: user.id };
+    // ADMIN sees all orders
+    // MANAGER sees orders from their country
+    // MEMBER sees only their own orders
+    let where = {};
+    if (user.role === "ADMIN") {
+      where = {};
+    } else if (user.role === "MANAGER") {
+      where = { country: user.country };
+    } else {
+      where = { userId: user.id };
+    }
 
     const orders = await prisma.order.findMany({
       where,
@@ -130,6 +139,7 @@ router.post(
   async (req: AuthRequest, res: Response) => {
     try {
       const { id } = req.params;
+      const { paymentMethodId } = req.body;
       const user = req.user!;
 
       const order = await prisma.order.findUnique({ where: { id } });
@@ -142,9 +152,22 @@ router.post(
         return res.status(403).json({ message: "Cross-country access denied" });
       }
 
+      // Verify payment method exists (if provided)
+      if (paymentMethodId) {
+        const paymentMethod = await prisma.paymentMethod.findUnique({
+          where: { id: paymentMethodId },
+        });
+        if (!paymentMethod) {
+          return res.status(400).json({ message: "Invalid payment method" });
+        }
+      }
+
       const updatedOrder = await prisma.order.update({
         where: { id },
-        data: { status: "PLACED" },
+        data: { 
+          status: "PLACED",
+          paymentMethodId: paymentMethodId || null,
+        },
         include: {
           restaurant: true,
           items: {

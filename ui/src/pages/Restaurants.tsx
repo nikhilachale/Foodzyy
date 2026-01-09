@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api/axios";
 import { useCart } from "../context/CartContext";
+import { useAuth } from "../context/AuthContext";
 import { AppHeader, PageLayout, PageContent, PageHero } from "../components/layout";
 import { LoadingState, EmptyState } from "../components/ui";
 import { CartButton, RestaurantCard, MenuModal, CartSidebar } from "../components/restaurant";
@@ -22,6 +23,7 @@ interface Restaurant {
 const RESTAURANT_EMOJIS = ["🍕", "🍔", "🌮", "🍜", "🍣", "🥗", "🍝", "🍛", "🥘", "🍱", "🍲", "🥡", "🍗", "🥪", "🌯", "🍿"];
 
 export default function Restaurants() {
+  const { user } = useAuth();
   const { 
     restaurant: cartRestaurant, 
     items: cartItems, 
@@ -78,6 +80,7 @@ export default function Restaurants() {
   const navLinks = [
     { to: "/restaurants", label: "Restaurants", icon: "🍽️", isActive: true },
     { to: "/orders", label: "Orders", icon: "📦", isActive: false },
+    ...(user?.role === "ADMIN" ? [{ to: "/payment", label: "Payment", icon: "💳", isActive: false }] : []),
   ];
 
   return (
