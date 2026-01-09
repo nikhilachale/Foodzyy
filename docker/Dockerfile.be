@@ -1,9 +1,5 @@
 # Build stage
-FROM node:20-alpine AS builder
-
-# Build arguments (pass during build with --build-arg)
-ARG DATABASE_URL
-ARG JWT_SECRET
+FROM --platform=linux/amd64 node:20-alpine AS builder
 
 WORKDIR /app
 
@@ -27,15 +23,7 @@ COPY BE/src ./src
 RUN npm run build
 
 # Production stage
-FROM node:20-alpine AS production
-
-# Build arguments (pass during build with --build-arg)
-ARG DATABASE_URL
-ARG JWT_SECRET
-
-# Set as environment variables for runtime
-ENV DATABASE_URL=$DATABASE_URL
-ENV JWT_SECRET=$JWT_SECRET
+FROM --platform=linux/amd64 node:20-alpine AS production
 
 WORKDIR /app
 
@@ -60,4 +48,4 @@ ENV NODE_ENV=production
 ENV PORT=3000
 
 # Start the application
-CMD ["node", "dist/index.js"]
+CMD ["node", "dist/src/index.js"]
