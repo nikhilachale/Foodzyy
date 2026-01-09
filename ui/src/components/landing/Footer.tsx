@@ -17,10 +17,10 @@ function BrandSection() {
   return (
     <div className="md:col-span-2">
       <div className="flex items-center gap-3 mb-4">
-        <div className="w-12 h-12 bg-gradient-to-br from-orange-400 to-pink-500 rounded-xl flex items-center justify-center">
+        <div className="w-12 h-12  bg-linear-to-br from-orange-400 to-pink-500 rounded-xl flex items-center justify-center">
           <span className="text-2xl">🍕</span>
         </div>
-        <span className="text-2xl font-extrabold bg-gradient-to-r from-orange-400 to-pink-400 bg-clip-text text-transparent">
+        <span className="text-2xl font-extrabold  bg-linear-to-r from-orange-400 to-pink-400 bg-clip-text text-transparent">
           Foodzyy
         </span>
       </div>

@@ -38,14 +38,14 @@ function StepCard({ number, icon, title, description, isLast }: StepCardProps) {
     <div className="relative text-center group">
       {/* Connector line */}
       {!isLast && (
-        <div className="hidden lg:block absolute top-12 left-[60%] w-full h-0.5 bg-gradient-to-r from-orange-500/50 to-transparent" />
+        <div className="hidden lg:block absolute top-12 left-[60%] w-full h-0.5  bg-linear-to-r from-orange-500/50 to-transparent" />
       )}
 
       {/* Icon with number badge */}
       <div className="relative inline-flex items-center justify-center w-24 h-24 mb-6">
-        <div className="absolute inset-0 bg-gradient-to-br from-orange-500 to-pink-500 rounded-full opacity-20 group-hover:opacity-40 transition-opacity duration-300" />
+        <div className="absolute inset-0  bg-linear-to-br from-orange-500 to-pink-500 rounded-full opacity-20 group-hover:opacity-40 transition-opacity duration-300" />
         <div className="relative text-4xl">{icon}</div>
-        <div className="absolute -top-2 -right-2 w-8 h-8 bg-gradient-to-br from-orange-500 to-pink-500 rounded-full flex items-center justify-center text-white text-sm font-bold">
+        <div className="absolute -top-2 -right-2 w-8 h-8  bg-linear-to-br from-orange-500 to-pink-500 rounded-full flex items-center justify-center text-white text-sm font-bold">
           {number}
         </div>
       </div>
@@ -58,13 +58,13 @@ function StepCard({ number, icon, title, description, isLast }: StepCardProps) {
 
 export default function HowItWorksSection() {
   return (
-    <section className="py-24 bg-gradient-to-b from-slate-900 to-slate-800">
+    <section className="py-24  bg-linear-to-b from-slate-900 to-slate-800">
       <div className="max-w-7xl mx-auto px-4">
         {/* Section Header */}
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-extrabold text-white mb-4">
             How It{" "}
-            <span className="bg-gradient-to-r from-orange-400 to-pink-400 bg-clip-text text-transparent">
+            <span className=" bg-linear-to-r from-orange-400 to-pink-400 bg-clip-text text-transparent">
               Works
             </span>
           </h2>

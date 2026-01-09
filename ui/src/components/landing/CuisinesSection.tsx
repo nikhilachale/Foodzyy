@@ -17,7 +17,7 @@ function CuisineCard({ name, icon, color }: CuisineCardProps) {
   return (
     <div className="group cursor-pointer p-6 rounded-2xl bg-white/5 border border-white/10 hover:border-white/30 text-center transition-all duration-300 hover:scale-105">
       <div
-        className={`inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br ${color} mb-4 text-3xl group-hover:scale-110 transition-transform duration-300`}
+        className={`inline-flex items-center justify-center w-16 h-16 rounded-2xl  bg-linear-to-br ${color} mb-4 text-3xl group-hover:scale-110 transition-transform duration-300`}
       >
         {icon}
       </div>
@@ -34,7 +34,7 @@ export default function CuisinesSection() {
         <div className="text-center mb-12">
           <h2 className="text-4xl md:text-5xl font-extrabold text-white mb-4">
             Popular{" "}
-            <span className="bg-gradient-to-r from-orange-400 to-pink-400 bg-clip-text text-transparent">
+            <span className=" bg-linear-to-r from-orange-400 to-pink-400 bg-clip-text text-transparent">
               Cuisines
             </span>
           </h2>

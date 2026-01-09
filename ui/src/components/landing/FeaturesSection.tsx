@@ -40,7 +40,7 @@ interface FeatureCardProps {
 function FeatureCard({ icon, title, description }: FeatureCardProps) {
   return (
     <div className="group p-8 rounded-3xl bg-white/5 border border-white/10 hover:border-orange-500/50 hover:bg-white/10 transition-all duration-300">
-      <div className="w-16 h-16 bg-gradient-to-br from-orange-500/20 to-pink-500/20 rounded-2xl flex items-center justify-center text-3xl mb-6 group-hover:scale-110 transition-transform duration-300">
+      <div className="w-16 h-16  bg-linear-to-br from-orange-500/20 to-pink-500/20 rounded-2xl flex items-center justify-center text-3xl mb-6 group-hover:scale-110 transition-transform duration-300">
         {icon}
       </div>
       <h3 className="text-xl font-bold text-white mb-3">{title}</h3>
@@ -57,7 +57,7 @@ export default function FeaturesSection() {
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-extrabold text-white mb-4">
             Why Choose{" "}
-            <span className="bg-gradient-to-r from-orange-400 to-pink-400 bg-clip-text text-transparent">
+            <span className=" bg-linear-to-r from-orange-400 to-pink-400 bg-clip-text text-transparent">
               Foodzyy?
             </span>
           </h2>

@@ -38,7 +38,7 @@ function AnimatedOrbs() {
     <div className="absolute inset-0 overflow-hidden">
       <div className="absolute -top-40 -right-40 w-96 h-96 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse" />
       <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-pink-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse" />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-orange-500 rounded-full mix-blend-multiply filter blur-3xl opacity-10 animate-pulse" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-125 h-125 bg-orange-500 rounded-full mix-blend-multiply filter blur-3xl opacity-10 animate-pulse" />
     </div>
   );
 }
@@ -66,7 +66,7 @@ export default function HeroSection() {
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Background gradient */}
-      <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900" />
+      <div className="absolute inset-0  bg-linear-to-br from-slate-900 via-purple-900 to-slate-900" />
 
       {/* Animated orbs */}
       <AnimatedOrbs />
@@ -84,7 +84,7 @@ export default function HeroSection() {
 
         {/* Headline */}
         <h1 className="text-5xl md:text-7xl lg:text-8xl font-extrabold mb-6">
-          <span className="bg-gradient-to-r from-orange-400 via-pink-400 to-purple-400 bg-clip-text text-transparent">
+          <span className=" bg-linear-to-r from-orange-400 via-pink-400 to-purple-400 bg-clip-text text-transparent">
             Delicious Food
           </span>
           <br />
@@ -101,13 +101,13 @@ export default function HeroSection() {
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
           <Link
             to="/login"
-            className="group relative overflow-hidden bg-gradient-to-r from-orange-500 via-pink-500 to-purple-500 text-white font-bold py-4 px-10 rounded-full shadow-lg hover:shadow-orange-500/25 transition-all duration-300 text-lg"
+            className="group relative overflow-hidden  bg-linear-to-r from-orange-500 via-pink-500 to-purple-500 text-white font-bold py-4 px-10 rounded-full shadow-lg hover:shadow-orange-500/25 transition-all duration-300 text-lg"
           >
             <span className="relative z-10 flex items-center gap-2">
               Get Started
               <span className="group-hover:translate-x-1 transition-transform duration-300">→</span>
             </span>
-            <div className="absolute inset-0 bg-gradient-to-r from-orange-600 via-pink-600 to-purple-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            <div className="absolute inset-0  bg-linear-to-r from-orange-600 via-pink-600 to-purple-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
           </Link>
 
           <a

@@ -135,7 +135,7 @@ export default function CartSidebar({
               <button
                 onClick={onPlaceOrder}
                 disabled={placing}
-                className="flex-[2] bg-linear-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white font-bold py-4 px-6 rounded-xl transition-all duration-300 disabled:opacity-50 hover:shadow-lg hover:shadow-green-500/25 flex items-center justify-center gap-2"
+                className="flex-2 bg-linear-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white font-bold py-4 px-6 rounded-xl transition-all duration-300 disabled:opacity-50 hover:shadow-lg hover:shadow-green-500/25 flex items-center justify-center gap-2"
               >
                 {placing ? (
                   <>

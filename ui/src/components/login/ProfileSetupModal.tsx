@@ -42,7 +42,7 @@ export default function ProfileSetupModal({ onSuccess }: ProfileSetupModalProps)
       <div className="bg-slate-900 border border-white/20 rounded-3xl shadow-2xl w-full max-w-md p-8 animate-in zoom-in-95 duration-300">
         {/* Header */}
         <div className="text-center mb-6">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-green-400 to-emerald-500 rounded-2xl shadow-lg mb-4">
+          <div className="inline-flex items-center justify-center w-16 h-16  bg-linear-to-br from-green-400 to-emerald-500 rounded-2xl shadow-lg mb-4">
             <span className="text-3xl">🎉</span>
           </div>
           <h2 className="text-2xl font-bold text-white">Welcome to Foodzyy!</h2>
