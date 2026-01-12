@@ -9,13 +9,6 @@ interface User {
   country: string;
 }
 
-interface JwtPayload {
-  sub: string;
-  phone: string;
-  name: string | null;
-  role: string;
-  country: string;
-}
 
 interface AuthContextType {
   user: User | null;

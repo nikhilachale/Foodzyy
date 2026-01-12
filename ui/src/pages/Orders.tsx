@@ -51,11 +51,11 @@ export default function Orders() {
   };
 
   // Call GraphQL mutation to mark order as placed
-  const confirmCheckout = async (paymentMethodId: string) => {
+  const confirmCheckout = async () => {
     if (!checkoutOrder) return;
     setActionLoading(checkoutOrder.id);
     try {
-      const res = await api.post("/graphql", {
+      await api.post("/graphql", {
         query: `
           mutation MarkOrderPlaced($orderId: ID!) {
             markOrderPlaced(orderId: $orderId) {
