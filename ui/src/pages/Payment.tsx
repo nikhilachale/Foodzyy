@@ -43,9 +43,12 @@ export default function Payment() {
 
   const fetchPaymentMethods = async () => {
     try {
-      const res = await api.get("/payment");
-      setPaymentMethods(res.data);
+      const response = await api.post("", {
+        query: `query { paymentMethods { id type } }`,
+      });
+      setPaymentMethods(response.data.data?.paymentMethods || []);
     } catch (error) {
+      setPaymentMethods([]);
       console.error("Failed to fetch payment methods", error);
     } finally {
       setLoading(false);
@@ -60,7 +63,10 @@ export default function Payment() {
     if (!selectedType) return;
     setAdding(true);
     try {
-      await api.put("/payment", { type: selectedType });
+      await api.post("", {
+        query: `mutation AddPaymentMethod($type: String!) { addPaymentMethod(type: $type) { id type } }`,
+        variables: { type: selectedType },
+      });
       await fetchPaymentMethods();
       setShowAddModal(false);
       setSelectedType("");
@@ -71,16 +77,10 @@ export default function Payment() {
     }
   };
 
+  // No deletePaymentMethod mutation in backend, so just close modal for now
   const deletePaymentMethod = async (id: string) => {
     setDeleting(id);
-    try {
-      await api.delete(`/payment/${id}`);
-      await fetchPaymentMethods();
-    } catch (error) {
-      console.error("Failed to delete payment method", error);
-    } finally {
-      setDeleting(null);
-    }
+    setTimeout(() => setDeleting(null), 500);
   };
 
   const navLinks = [

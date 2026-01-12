@@ -47,16 +47,15 @@ export default function CheckoutModal({ order, onClose, onConfirm, loading }: Ch
   useEffect(() => {
     if (order) {
       setFetchingMethods(true);
-      api.get("/payment")
+      api.post("", {
+        query: `query { paymentMethods { id type } }`,
+      })
         .then((res) => {
-          // Combine user's payment methods with default options
-          const allMethods = [...DEFAULT_PAYMENT_OPTIONS, ...res.data];
+          const allMethods = [...DEFAULT_PAYMENT_OPTIONS, ...(res.data.data?.paymentMethods || [])];
           setPaymentMethods(allMethods);
-          // Default to UPI
           setSelectedMethod("default_upi");
         })
         .catch(() => {
-          // On error, still show default options
           setPaymentMethods(DEFAULT_PAYMENT_OPTIONS);
           setSelectedMethod("default_upi");
         })

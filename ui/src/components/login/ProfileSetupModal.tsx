@@ -9,28 +9,29 @@ interface ProfileSetupModalProps {
 
 export default function ProfileSetupModal({ onSuccess }: ProfileSetupModalProps) {
   const [name, setName] = useState("");
+  const [country, setCountry] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
   const handleSave = async () => {
-    if (!name.trim()) {
-      setError("Please enter your name");
+    if (!name.trim() || !country) {
+      setError("Please enter your name and select a country");
       return;
     }
-
     setLoading(true);
     setError("");
-
     try {
-      const res = await api.put("/auth/profile", { name: name.trim() });
-      localStorage.setItem("token", res.data.access_token);
+      await api.post("/", {
+        query: `mutation UpdateUser($name: String!, $country: Country!) {\n  updateUser(name: $name, country: $country) { id name country }\n}`,
+        variables: { name, country },
+      });
       setSuccess("Welcome to Foodzyy!");
       setTimeout(() => {
         onSuccess();
       }, 1000);
     } catch (err: any) {
-      setError(err.response?.data?.message || "Failed to save profile. Please try again.");
+      setError("Failed to save profile. Please try again.");
       console.error("Profile update failed", err);
     } finally {
       setLoading(false);
@@ -58,17 +59,27 @@ export default function ProfileSetupModal({ onSuccess }: ProfileSetupModalProps)
             value={name}
             onChange={setName}
           />
-
+          <div>
+            <label className="block text-gray-300 mb-1">Country</label>
+            <select
+              className="w-full rounded-lg p-2 bg-slate-800 text-white border border-white/10"
+              value={country}
+              onChange={e => setCountry(e.target.value)}
+            >
+              <option value="">Select Country</option>
+              <option value="INDIA">India</option>
+              <option value="AMERICA">America</option>
+            </select>
+          </div>
           {/* Error/Success Messages */}
           {error && <p className="text-red-400 text-sm animate-pulse">{error}</p>}
           {success && <p className="text-green-400 text-sm animate-pulse">{success}</p>}
-
           {/* Submit Button */}
           <GradientButton
             onClick={handleSave}
             loading={loading}
             loadingText="Getting Started..."
-            disabled={!name.trim()}
+            disabled={!name.trim() || !country}
             className="mt-4"
           >
             Get Started →

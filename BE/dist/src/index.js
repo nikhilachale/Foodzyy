@@ -1,10 +1,7 @@
 import "dotenv/config";
 import express from "express";
 import cors from "cors";
-import authRoutes from "./routes/auth.js";
-import restaurantRoutes from "./routes/restaurants.js";
-import orderRoutes from "./routes/orders.js";
-import paymentRoutes from "./routes/payment.js";
+// REST route imports removed (migrated to GraphQL)
 const app = express();
 const PORT = process.env.PORT || 3000;
 // Middleware
@@ -20,10 +17,10 @@ app.get("/health", (req, res) => {
     res.json({ status: "ok", timestamp: new Date().toISOString() });
 });
 // Routes
-app.use("/auth", authRoutes);
-app.use("/restaurants", restaurantRoutes);
-app.use("/orders", orderRoutes);
-app.use("/payment", paymentRoutes);
+// app.use("/auth", authRoutes);
+// app.use("/restaurants", restaurantRoutes);
+// app.use("/orders", orderRoutes);
+// app.use("/payment", paymentRoutes);
 // 404 handler
 app.use((req, res) => {
     res.status(404).json({ message: "Route not found" });

@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
-import { jwtDecode } from "jwt-decode";
+import api from "../api/axios";
 
 interface User {
   id: string;
@@ -22,23 +22,33 @@ interface AuthContextType {
   logout: () => void;
 }
 
+
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
 
-  useEffect(() => {
+  async function fetchUser() {
     const token = localStorage.getItem("token");
-    if (token) {
-      const decoded = jwtDecode<JwtPayload>(token);
-      setUser({
-        id: decoded.sub,
-        phone: decoded.phone,
-        name: decoded.name,
-        role: decoded.role,
-        country: decoded.country,
-      });
+    if (!token) {
+      setUser(null);
+      return;
     }
+    try {
+      const res = await api.post("/", { query: `query { me { id phone name role country } }` });
+      const me = res.data.data?.me;
+      if (me) setUser(me);
+      else setUser(null);
+    } catch {
+      setUser(null);
+    }
+  }
+
+  useEffect(() => {
+    fetchUser();
+    // Listen for storage changes (e.g., login in another tab)
+    window.addEventListener("storage", fetchUser);
+    return () => window.removeEventListener("storage", fetchUser);
   }, []);
 
   const logout = () => {

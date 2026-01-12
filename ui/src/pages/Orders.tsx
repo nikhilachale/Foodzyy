@@ -17,9 +17,29 @@ export default function Orders() {
   const [actionLoading, setActionLoading] = useState<string | null>(null);
 
   const fetchOrders = async () => {
-    const res = await api.get("/orders?page=1&limit=20");
-    setOrders(res.data);
-    setLoading(false);
+    try {
+      const response = await api.post("", {
+        query: `
+          query GetOrders($page: Int, $limit: Int) {
+            orders(page: $page, limit: $limit) {
+              id
+              status
+              totalAmount
+              createdAt
+              restaurant { id name country }
+              items { id quantity menuItem { id name price } }
+            }
+          }
+        `,
+        variables: { page: 1, limit: 20 },
+      });
+      console.log("[Orders] Data received from backend:", response.data.data?.orders);
+      setOrders(response.data.data?.orders || []);
+    } catch {
+      setOrders([]);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -30,25 +50,58 @@ export default function Orders() {
     setCheckoutOrder(order);
   };
 
+  // Call GraphQL mutation to mark order as placed
   const confirmCheckout = async (paymentMethodId: string) => {
     if (!checkoutOrder) return;
     setActionLoading(checkoutOrder.id);
     try {
-      await api.post(`/orders/${checkoutOrder.id}/checkout`, { paymentMethodId });
-      await fetchOrders();
-      setCheckoutOrder(null);
+      const res = await api.post("/graphql", {
+        query: `
+          mutation MarkOrderPlaced($orderId: ID!) {
+            markOrderPlaced(orderId: $orderId) {
+              id
+              status
+            }
+          }
+        `,
+        variables: { orderId: checkoutOrder.id },
+      });
+      setOrders((orders) =>
+        orders.map((order) =>
+          order.id === checkoutOrder.id
+            ? { ...order, status: "PLACED" }
+            : order
+        )
+      );
     } catch (error) {
-      console.error("Checkout failed", error);
+      console.error("Failed to place order", error);
     } finally {
       setActionLoading(null);
+      setCheckoutOrder(null);
     }
   };
 
+  // Call GraphQL mutation to cancel and remove order from backend
   const cancel = async (id: string) => {
+    console.log("[Orders] Cancel order:", id);
     setActionLoading(id);
-    await api.post(`/orders/${id}/cancel`);
-    await fetchOrders();
-    setActionLoading(null);
+    try {
+      await api.post("/graphql", {
+        query: `
+          mutation CancelOrder($orderId: ID!) {
+            cancelOrder(orderId: $orderId) {
+              id
+            }
+          }
+        `,
+        variables: { orderId: id },
+      });
+      setOrders((orders) => orders.filter((order) => order.id !== id));
+    } catch (error) {
+      console.error("Failed to cancel order", error);
+    } finally {
+      setActionLoading(null);
+    }
   };
 
   const navLinks = [
@@ -134,4 +187,3 @@ export default function Orders() {
     </PageLayout>
   );
 }
-

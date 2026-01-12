@@ -35,16 +35,28 @@ export default function PhoneLoginForm({ onNewUser, onExistingUser }: PhoneLogin
     setError("");
 
     try {
-      const res = await api.post("/auth/login", { phone: cleanPhone });
-      localStorage.setItem("token", res.data.access_token);
-
-      if (res.data.isNewUser) {
-        onNewUser();
+      const response = await api.post("", {
+        query: `mutation Login($phone: String!) {\n  login(phone: $phone)\n}`,
+        variables: { phone: cleanPhone },
+      });
+      const token = response.data.data?.login;
+      if (token) {
+        localStorage.setItem("token", token);
+        // Fetch user profile to check if name/country is missing
+        const meRes = await api.post("/", {
+          query: `query { me { id name country } }`,
+        });
+        const user = meRes.data.data?.me;
+        if (!user?.name || !user?.country) {
+          onNewUser();
+        } else {
+          onExistingUser();
+        }
       } else {
-        onExistingUser();
+        setError("Login failed. Please try again.");
       }
     } catch (err: any) {
-      setError(err.response?.data?.message || "Login failed. Please try again.");
+      setError(err.response?.data?.errors?.[0]?.message || "Login failed. Please try again.");
       console.error("Login failed", err);
     } finally {
       setLoading(false);

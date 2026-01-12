@@ -43,10 +43,31 @@ export default function Restaurants() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
-    api.get("/restaurants?page=1&limit=20")
-      .then(res => setRestaurants(res.data))
+    if (!user) return;
+    setLoading(true);
+    api.post("/graphql", {
+      query: `
+        query ($page: Int!, $limit: Int!) {
+          restaurants(page: $page, limit: $limit) {
+            id
+            name
+            country
+            menus {
+              id
+              name
+              price
+            }
+          }
+        }
+      `,
+      variables: { page: 1, limit: 20 },
+    })
+      .then(res => {
+        console.log("[Restaurants] Data received from backend:", res.data);
+        setRestaurants(res.data.data.restaurants);
+      })
       .finally(() => setLoading(false));
-  }, []);
+  }, [user]);
 
   const getItemQuantity = (menuItemId: string) => {
     const item = cartItems.find((i) => i.menuItem.id === menuItemId);
@@ -58,18 +79,32 @@ export default function Restaurants() {
     
     setPlacing(true);
     try {
-      await api.post("/orders", {
-        restaurantId: cartRestaurant.id,
-        items: cartItems.map((item) => ({
-          menuItemId: item.menuItem.id,
-          quantity: item.quantity,
-        })),
+      await api.post("/", {
+        query: `
+          mutation PlaceOrder($restaurantId: ID!, $items: [OrderItemInput!]!) {
+            placeOrder(restaurantId: $restaurantId, items: $items) {
+              id
+              status
+            }
+          }
+        `,
+        variables: {
+          restaurantId: cartRestaurant.id,
+          items: cartItems.map((item) => ({
+            menuItemId: item.menuItem.id,
+            quantity: item.quantity,
+          })),
+        },
       });
       clearCart();
       setShowCart(false);
       navigate("/orders");
-    } catch (error) {
-      console.error("Failed to place order", error);
+    } catch (error: any) {
+      if (error.response && error.response.data && error.response.data.errors) {
+        console.error("GraphQL error:", error.response.data.errors);
+      } else {
+        console.error("Failed to place order", error);
+      }
     } finally {
       setPlacing(false);
     }
